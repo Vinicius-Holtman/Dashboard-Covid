@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>EPI Vision</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="./vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet"
+    >
+    
+    <link rel="shortcut icon" href="./vendor/fontawesome-free/svgs/solid/eye.svg">
+    <link rel="shortcut icon" href="./vendor/fontawesome-free/svgs/solid/address-book.svg">
+     <!-- CDN ChartJS -->
+     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.7.1/dist/Chart.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.2.0"></script>
+    <!-- Custom styles for this template-->
+    <link href="./css/sb-admin-2.css" rel="stylesheet">
+</head>
+
+<body id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <%- include('../partials/sidebar'); %>
+        <!-- End of Sidebar -->
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Main Content -->
+            <div id="content">
+                <!-- Begin Page Content -->
+                <div class="container container-lg p-1">
+
+                    <!-- Content Row ONE -->
+                    <div class="row mb-4">
+                        <div class="col-sm-6">
+                            <div class="card bg-danger text-white shadow">
+                                <a href="/avisos" style="text-decoration:none; color:white">
+                                    <div class="card-body">
+                                    <i class="fas fa-exclamation-triangle"></i> Avisos (novos): <%= naoVis[0].naoVis %>
+                                </div></a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="card bg-success text-white shadow">
+                                <a href="/avisos" style="text-decoration:none; color:white">
+                                    <div class="card-body">
+                                    <i class="fas fa-exclamation-triangle"></i> Avisos (total): <%= total_avisos[0].cnt %>
+                                </div></a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Row ONE -->
+
+                    <!-- Content Row TWO-->
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <!-- Card de ùltimos casos-->
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div class="card-header py-3">
+                                    <h4 class="m-0 font-weight-bold text-light">Últimos casos</h4>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <ul class="list-group list-group-flush">
+                                        <a style="text-decoration: none;color:black" href="/avisosDepartamento?id=<%= ultimos_avisos[0].departamento_id %>"><li class="list-group-item list-group-item-danger"><%= ultimos_avisos[0].departamento_nome %>  -  <%= moment(ultimos_avisos[0].aviso_data).fromNow() %></li></a>
+                                        <a style="text-decoration: none;color:black" href="/avisosDepartamento?id=<%= ultimos_avisos[1].departamento_id %>"><li class="list-group-item list-group-item-warning"><%= ultimos_avisos[1].departamento_nome %>  -  <%= moment(ultimos_avisos[1].aviso_data).fromNow() %></li></a>
+                                        <a style="text-decoration: none;color:black" href="/avisosDepartamento?id=<%= ultimos_avisos[2].departamento_id %>"><li class="list-group-item list-group-item-warning"><%= ultimos_avisos[2].departamento_nome %>  -  <%= moment(ultimos_avisos[2].aviso_data).fromNow() %></li></a>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Departamentos com maior quantidade de casos -->
+                        <div class="col-md-6">
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div class="card-header py-3">
+                                    <h4 class="m-0 font-weight-bold text-light">Maior quantidade de casos</h4>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <ul class="list-group list-group-flush">
+                                        <a style="text-decoration: none;color:black" href="/avisosDepartamento?id=<%= departamento_id[0] %>"><li class="list-group-item list-group-item-danger"><%= departamentos[0] %>  -  <%= casosPorDepartamento[0] %></li></a>
+                                        <a style="text-decoration: none;color:black" href="/avisosDepartamento?id=<%= departamento_id[1] %>"><li class="list-group-item list-group-item-warning"><%= departamentos[1] %>  -  <%= casosPorDepartamento[1] %></li></a>
+                                        <a style="text-decoration: none;color:black" href="/avisosDepartamento?id=<%= departamento_id[2] %>"><li class="list-group-item list-group-item-warning"><%= departamentos[2] %>  -  <%= casosPorDepartamento[2] %></li></a>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Row TWO -->
+
+                    <!-- Content Row THREE -->
+                    <div class="row">
+
+                        <!-- Area Chart -->
+                        <div class="col-md-12">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3 d-flex">
+                                    <div class="flex-grow-1 mr-2">
+                                        <h4 class="m-0 font-weight-bold text-light">Funcionários Detectados Sem Máscara de Proteção</h4>
+                                    </div>
+
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Filtrar Gráficos
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item" href="#">Dia</a>
+                                        <a class="dropdown-item" href="#">Mês</a>
+                                        <a class="dropdown-item" href="#">Ano</a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-area">
+                                        <canvas id="myAreaChart"></canvas>
+                                        <%- include('../partials/chart-area'); %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                         <!-- Bar Chart -->
+                         <div class="col">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h4 class="m-0 font-weight-bold text-light">Casos de Covid-19 por Semana</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-pie">
+                                        <canvas id="myBarChart"></canvas>
+                                        <%- include('../partials/chart-bar'); %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- End Row THREE -->
+
+                    <!-- Content Row FOUR -->
+                    <div class="row">   
+                        
+                        <!-- Line Chart-->
+                        <div class="col-xl-5 col-lg-7">
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div class="card-header py-3">
+                                    <h4 class="m-0 font-weight-bold text-light">Casos de Covid-19 na Vale Fértil</h4>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="chart-line pt-4">
+                                        <canvas id="myLineChart"></canvas>
+                                        <%- include('../partials/chart-line'); %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Donut Chart -->
+                        <div class="col-xl-4 col-lg-5">
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div class="card-header py-3">
+                                    <h4 class="m-0 font-weight-bold text-light">Casos de Covid-19 por Setor</h4>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="chart-pie pt-4 pb-2">
+                                        <canvas id="myPieChart"></canvas>
+                                        <%- include('../partials/chart-pie'); %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- End Row FOUR -->
+
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+            <!-- End of Main Content -->
+        </div>
+        <!-- End of Content Wrapper -->
+    </div>
+    <!-- End of Page Wrapper -->
+
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="./vendor/jquery/jquery.min.js"></script>
+    <script src="./vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="./vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="./js/sb-admin-2.min.js"></script>
+
+
+    <!-- Page level custom scripts 
+    <script src="./js/graficos/chart-area.js"></script>
+    <script src="./js/graficos/chart-pie.ejs"></script>
+    <script src="./js/graficos/chart-line.js"></script>
+    <script src="./js/graficos/chart-bar.js"></script>-->
+
+</body>
+
+</html>
